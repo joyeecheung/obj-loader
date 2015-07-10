@@ -77,7 +77,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\glCanvas.cpp" />
     <ClCompile Include="src\glm.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Vector.cpp" />
@@ -228,7 +227,6 @@
     <ClInclude Include="include\FL\x.H" />
     <ClInclude Include="include\FreeImage.h" />
     <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\glCanvas.h" />
     <ClInclude Include="src\glm.h" />
     <ClInclude Include="src\Vector.h" />
   </ItemGroup>
