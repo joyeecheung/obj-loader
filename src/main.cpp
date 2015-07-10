@@ -3,7 +3,7 @@
 #include <FL/Fl.H>
 #include <FL/Fl_Window.H>
 #include <FL/Fl_Menu_Bar.H>
-#include <FL/Fl_File_Chooser.H>
+#include <FL/Fl_Native_File_Chooser.H>
 
 #include <FL/glu.h>
 #include <FL/glut.h>
@@ -54,54 +54,6 @@ GLuint loadObjIntoList(char * modelfile) {
         return glmList(model_obj, GLM_SMOOTH);
     }
 }
-
-
-void open_cb(Fl_Widget* widget, void* arg) {
-
-    // Create the file chooser, and show it
-    Fl_File_Chooser chooser(".",                        // directory
-                            "*.obj",                        // filter
-                            Fl_File_Chooser::MULTI,     // chooser type
-                            "Choose an obj");        // title
-    chooser.show();
-
-    // Block until user picks something.
-    //     (The other way to do this is to use a callback())
-    //
-    while (chooser.shown()) {
-        Fl::wait();
-    }
-
-    // User hit cancel?
-    if (chooser.value() == NULL) {
-        fprintf(stderr, "(User hit 'Cancel')\n"); return;
-    }
-
-    // Print what the user picked
-    fprintf(stderr, "--------------------\n");
-    fprintf(stderr, "DIRECTORY: '%s'\n", chooser.directory());
-    fprintf(stderr, "    VALUE: '%s'\n", chooser.value());
-    fprintf(stderr, "    COUNT: %d files selected\n", chooser.count());
-
-    // Multiple files? Show all of them
-    if (chooser.count() > 1) {
-        for (int t = 1; t <= chooser.count(); t++) {
-            fprintf(stderr, " VALUE[%d]: '%s'\n", t, chooser.value(t));
-        }
-    }
-
-    // to non-const
-    char buffer[128] = { 0 };
-    strcpy(buffer, chooser.value());
-
-    model_list = loadObjIntoList(buffer);
-}
-
-// quit item
-void quit_cb(Fl_Widget* widget, void* arg) {
-    exit(0);
-}
-
 
 int handleGLError() {
     GLenum error;
@@ -221,6 +173,33 @@ void initCanvas(int width, int height) {
 void render() {
     glCallList(model_list);
     glutPostRedisplay();
+}
+
+void open_cb(Fl_Widget* widget, void* arg) {
+    // Create native chooser
+    Fl_Native_File_Chooser chooser;
+    chooser.directory(".");
+    chooser.title("Pick a .obj file");
+    chooser.type(Fl_Native_File_Chooser::BROWSE_FILE);
+    chooser.filter("Wavefront OBJ\t*.obj\n");
+    // Show native chooser
+    switch (chooser.show()) {
+        case -1: fprintf(stderr, "ERROR: %s\n", chooser.errmsg()); break;  // ERROR
+        case  1: fprintf(stderr, "*** CANCEL\n"); break;  // CANCEL
+        default: // PICKED FILE
+            if (chooser.filename()) {
+                char buffer[128] = { 0 };
+                strcpy(buffer, chooser.filename());
+                model_list = loadObjIntoList(buffer);
+                render();
+            }
+            break;
+    }
+}
+
+// quit item
+void quit_cb(Fl_Widget* widget, void* arg) {
+    exit(0);
 }
 
 int main(int argc, char *argv[]) {

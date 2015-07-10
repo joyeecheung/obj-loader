@@ -16,6 +16,7 @@ Makefile
 *.psess
 *.vsd
 main
-*.obj
 *.mtl
 prepare.md
+obj
+*.idb
