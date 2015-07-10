@@ -11,8 +11,6 @@ void Camera::rotate(const FVector3 &dir) {
 }
 
 void Camera::moveX(GLfloat delta) {
-    if (directionChanged)
-        updateDirection();
     FVector3 moveVector;
 
     moveVector.set(direction.z * -delta, 0.0f,
@@ -21,14 +19,10 @@ void Camera::moveX(GLfloat delta) {
 }
 
 void Camera::moveY(GLfloat delta) {
-    if (directionChanged)
-        updateDirection();
     position.y += delta;
 }
 
 void Camera::moveZ(GLfloat delta) {
-    if (directionChanged)
-        updateDirection();
     FVector3 moveVector;
     moveVector.set(direction.x * -delta,
                    direction.y * -delta,
@@ -48,10 +42,10 @@ void Camera::rotateY(GLfloat angle) {
 }
 
 void Camera::render(void) const {
+    glTranslatef(-position.x, -position.y, -position.z);
     glRotatef(-rotation.x, 1.0, 0.0, 0.0);
     glRotatef(-rotation.y, 0.0, 1.0, 0.0);
     glRotatef(-rotation.z, 0.0, 0.0, 1.0);
-    glTranslatef(-position.x, -position.y, -position.z);
 }
 
 void Camera::updateDirection(void) {
