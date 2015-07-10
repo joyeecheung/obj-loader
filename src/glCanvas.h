@@ -30,7 +30,9 @@ public:
   // Constructor and destructor
   GLCanvas(void) { }
  ~GLCanvas(void) { }
-
+ static void setList(int list) {
+     display_list_index = list;
+ }
   // Set up the canvas and enter the rendering loop
   // Note that this function will not return but can be
   // terminated by calling 'exit(0)'

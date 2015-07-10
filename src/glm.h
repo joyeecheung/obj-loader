@@ -18,7 +18,7 @@ coordinate generation (spheremap and planar projections) + more.
 #if defined(__APPLE__) || defined(MACOSX)
 #include <GLUT/glut.h>
 #else
-#include <GL/glut.h>
+#include <FL/glut.h>
 #endif
 
 

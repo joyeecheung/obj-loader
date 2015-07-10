@@ -1,12 +1,31 @@
 #include "glCanvas.h"
 
 #include <cstdio>
+#include <FL/glu.h>
+#include <FL/glut.h>
 
 // Included files for OpenGL rendering
-#include <GL/gl.h>
-#include <GL/glut.h>
 
-// ========================================================
+
+/***********************
+* Lighting configuration
+***********************/
+const float LIGHT_AMBIENT_1[] = { 0.1f, 0.1f, 0.1f, 0.0f };
+const float LIGHT_DIFFUSE_1[] = {
+    211.0f / 255.0f, 183.0f / 255.0f, 133.0f / 255.0f, 0.0f
+};
+const float LIGHT_POSITION_1[] = { 0.8f, 0.4f, 0.5f, 0.0f };
+
+const float LIGHT_AMBIENT_2[] = { 0.2f, 0.2f, 0.2f, 0.0f };
+const float LIGHT_DIFFUSE_2[] = {
+    211.0f / 255.0f, 183.0f / 255.0f, 133.0f / 255.0f, 0.0f
+};
+const float LIGHT_POSITION_2[] = { 0.8f, -0.2f, 0.5f, 0.0f };
+
+const float MOVE_SPEED = 0.1f;
+const float ROTATE_SPEED = 1.0f;
+const float ROTATE_FACTOR = 0.25f;
+
 int GLCanvas::mouseButton = 0;
 int GLCanvas::mouseX = 0;
 int GLCanvas::mouseY = 0;
@@ -48,14 +67,6 @@ void GLCanvas::InitLight() {
 
 void GLCanvas::display(void)
 {
-  // // Clear the display buffer, set it to the background color
-  // glClearColor(1,1,1,0);
-  // glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-  // // Set the camera parameters
-  // glMatrixMode(GL_MODELVIEW);
-  // glLoadIdentity();
-  // InitLight(); // light will be a headlamp!
 
    /* clear the frame buffer and depth buffer */
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
@@ -75,21 +86,10 @@ void GLCanvas::display(void)
   glutSwapBuffers();
 }
 
-// ========================================================
-// Callback function for window resize
-// ========================================================
-
 void GLCanvas::reshape(int w, int h) {
   // Set the OpenGL viewport to fill the entire window
   glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-
-  // Set the camera parameters to reflect the changes
-  // camera->glInit(w, h);
 }
-
-// ========================================================
-// Callback function for mouse click or release
-// ========================================================
 
 void GLCanvas::mouse(int button, int state, int x, int y) {
   // Save the current state of the mouse.  This will be
@@ -99,34 +99,27 @@ void GLCanvas::mouse(int button, int state, int x, int y) {
   mouseY = y;
 }
 
-// ========================================================
-// Callback function for mouse drag
-// ========================================================
-const float MOVE_SPEED = 0.1f;
-const float ROTATE_SPEED = 1.0f;
-const float ROTATE_FACTOR = 0.25f;
-
 void GLCanvas::motion(int x, int y) {
   // Left button = rotation
   // (rotate camera around the up and horizontal vectors)
   if (mouseButton == GLUT_LEFT_BUTTON) {
-    camera.rotateX((mouseY - y) * ROTATE_FACTOR);
-    camera.rotateY((mouseX - x) * ROTATE_FACTOR);
+    camera.rotateX(-(mouseY - y) * ROTATE_FACTOR);
+    camera.rotateY(-(mouseX - x) * ROTATE_FACTOR);
     mouseX = x;
     mouseY = y;
   }
   // Middle button = translation
   // (move camera perpendicular to the direction vector)
   else if (mouseButton == GLUT_MIDDLE_BUTTON) {
-    camera.moveX((mouseX - x) * MOVE_SPEED);
-    camera.moveY((mouseY - y) * MOVE_SPEED);
+    camera.moveX(-(mouseX - x) * MOVE_SPEED);
+    camera.moveY(-(mouseY - y) * MOVE_SPEED);
     mouseX = x;
     mouseY = y;
   }
   // Right button = zoom
   // (move camera along the direction vector)
   else if (mouseButton == GLUT_RIGHT_BUTTON) {
-    camera.moveZ((mouseX - x) * MOVE_SPEED);
+    camera.moveZ(-(mouseX - x) * MOVE_SPEED);
     mouseX = x;
     mouseY = y;
   }
@@ -135,58 +128,6 @@ void GLCanvas::motion(int x, int y) {
   glutPostRedisplay();
 }
 
-// // ========================================================
-// // Callback function for keyboard events
-// // ========================================================
-
-// void GLCanvas::keyboard(unsigned char key, int x, int y) {
-//   switch (key) {
-//   case 'w':  case 'W':
-//     args->wireframe = !args->wireframe;
-//     render();
-//     break;
-//   case 'g': case 'G':
-//     args->gouraud = !args->gouraud;
-//     render();
-//     break;
-//   case 's': case 'S':
-//     mesh->LoopSubdivision();
-//     render();
-//     break;
-//   case 'd': case 'D':
-//     mesh->Simplification((int)floor(0.9*mesh->numTriangles()));
-//     render();
-//     break;
-//   case 'q':  case 'Q':
-//     exit(0);
-//     break;
-//   default:
-//     printf("UNKNOWN KEYBOARD INPUT  '%c'\n", key);
-//   }
-// }
-
-/***********************
- * Lighting configuration
- ***********************/
-const float LIGHT_AMBIENT_1[] = { 0.1f, 0.1f, 0.1f, 0.0f };
-const float LIGHT_DIFFUSE_1[] = {
-    211.0f / 255.0f, 183.0f / 255.0f, 133.0f / 255.0f, 0.0f
-};
-const float LIGHT_POSITION_1[] = { 0.8f, 0.4f, 0.5f, 0.0f };
-
-const float LIGHT_AMBIENT_2[] = { 0.2f, 0.2f, 0.2f, 0.0f };
-const float LIGHT_DIFFUSE_2[] = {
-    211.0f / 255.0f, 183.0f / 255.0f, 133.0f / 255.0f, 0.0f
-};
-const float LIGHT_POSITION_2[] = { 0.8f, -0.2f, 0.5f, 0.0f };
-
-
-// ========================================================
-// Initialize all appropriate OpenGL variables, set
-// callback functions, and start the main event loop.
-// This function will not return but can be terminated
-// by calling 'exit(0)'
-// ========================================================
 
 void init(int width, int height) {
     // solid rendering
@@ -232,23 +173,16 @@ void GLCanvas::initialize(int display_list, int width, int height) {
   /* set up a perspective projection in the projection matrix */
   glMatrixMode (GL_PROJECTION);
   glLoadIdentity ();
-  gluPerspective(70.0, (GLfloat)width / height, 1.0, 10000.0);
+  gluPerspective(45.0, (GLfloat)width / height, 0.5, 3000.0);
 
   glMatrixMode (GL_MODELVIEW);
   glLoadIdentity();
-  camera.moveZ(10);
-  /* position camera to see the island */
-  // gluLookAt(1400.0, 500.0, 1400.0,  /* eye point */
-  //          0.0, 10.0,    0.0,  /* at point */
-  //        0.0,  1.0,    0.0); /* up vector */
+  camera.moveZ(5);
 
   // Initialize callback functions
   glutMouseFunc(mouse);
   glutMotionFunc(motion);
   glutDisplayFunc(display);
-
-  // glutReshapeFunc(reshape);
-  // glutKeyboardFunc(keyboard);
 
   // render();
 
@@ -261,9 +195,6 @@ void GLCanvas::render() {
   glCallList(display_list_index);
   glutPostRedisplay();
 }
-
-// ========================================================
-// ========================================================
 
 int HandleGLError() {
   GLenum error;
