@@ -10,6 +10,9 @@
 class Camera {
 public:
     Camera() {
+        reset();
+    }
+    void reset() {
         position.set(0.0f, 0.0f, 0.0f);
         direction.set(0.0f, 0.0f, -1.0f);
         directionChanged = false;

@@ -57,7 +57,7 @@
       <TargetMachine>MachineX86</TargetMachine>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>fltk.lib;fltkforms.lib;fltkgl.lib;fltkimages.lib;fltkjpeg.lib;fltkpng.lib;fltkzlib.lib;freeglut.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>fltk.lib;fltkgl.lib;freeglut.lib;opengl32.lib;glu32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -76,12 +76,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Canvas.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\glm.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Canvas.h" />
     <ClInclude Include="include\FL\dirent.h" />
     <ClInclude Include="include\FL\Enumerations.H" />
     <ClInclude Include="include\FL\filename.H" />
@@ -227,6 +229,7 @@
     <ClInclude Include="include\FL\x.H" />
     <ClInclude Include="include\FreeImage.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\glm.h" />
     <ClInclude Include="src\Vector.h" />
   </ItemGroup>
